@@ -27,15 +27,21 @@ export default function Feed() {
 
         const { data: usersData, error: usersError } = await supabase
           .from('users')
-          .select('email, username')
-          .in('email', emails);
+          .select('id, username')
+          .in('id', emails);
 
         if (usersError) throw usersError;
+
+        // Debugging: Log the data returned from the users table
+        console.log('Users Data:', usersData);
 
         const usersMap = usersData.reduce((acc, user) => {
           acc[user.email] = user.username;
           return acc;
         }, {});
+
+        // Debugging: Log the usersMap to ensure proper mapping
+        console.log('Users Map:', usersMap);
 
         const postsWithUsernames = postsData.map(post => ({
           ...post,
@@ -67,7 +73,9 @@ export default function Feed() {
       data={posts}
       keyExtractor={(item) => item.id.toString()}
       renderItem={({ item }) => (
-        <Post username={item.username} content={item.content} createdAt={item.created_at} />
+        <Post username={item.username} content={item.content} 
+        createdAt={item.created_at} 
+        />
       )}
     />
   );

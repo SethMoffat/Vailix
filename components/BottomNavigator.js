@@ -28,6 +28,7 @@ export default function BottomNavigator() {
         tabBarActiveTintColor: 'tomato',
         tabBarInactiveTintColor: 'gray',
         tabBarStyle: [{ display: 'flex' }, null],
+        headerShown: false, // Hide the top bar
       })}
     >
       <Tab.Screen name="FeedTab" component={FeedTab} />
