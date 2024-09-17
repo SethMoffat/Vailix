@@ -26,15 +26,40 @@ export default function SignUpScreen({ navigation }) {
       return;
     }
 
-    const { user, error } = await supabase.auth.signUp({
-      email,
-      password,
-    });
-    if (error) {
-      setSignUpError(error.message);
-    } else {
-      alert('Check your email for the confirmation link!');
-      navigation.navigate('Home');
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+      });
+
+      if (error) {
+        console.error('Sign up error:', error.message);
+        setSignUpError(error.message);
+        return;
+      }
+
+      const user = data.user;
+
+      if (!user) {
+        setSignUpError('Sign up failed. Please try again.');
+        return;
+      }
+
+      // Insert account information into the profiles table
+      const { error: insertError } = await supabase
+        .from('profiles')
+        .insert([{ id: user.id, email }]);
+
+      if (insertError) {
+        console.error('Insert profile error:', insertError.message);
+        setSignUpError(insertError.message);
+      } else {
+        alert('Sign up successful!');
+        navigation.navigate('FeedScreen'); // Navigate to FeedScreen
+      }
+    } catch (error) {
+      console.error('Error during sign up:', error); // Log detailed error information
+      setSignUpError('An unexpected error occurred. Please try again.');
     }
   };
 

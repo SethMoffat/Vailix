@@ -5,16 +5,28 @@ import { supabase } from '../SupaBase/supabaseClient';
 export default function SignInScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [signInError, setSignInError] = useState('');
 
   const handleSignIn = async () => {
-    const { user, error } = await supabase.auth.signIn({
-      email,
-      password,
-    });
-    if (error) {
-      alert(error.message);
-    } else {
-      navigation.navigate('Home');
+    setSignInError('');
+
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        setSignInError(error.message);
+      } else if (data.user) {
+        // Directly navigate to FeedScreen upon successful sign-in
+        navigation.navigate('Feed');
+      } else {
+        setSignInError('Sign in failed. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error during sign in:', error); // Log detailed error information
+      setSignInError('An unexpected error occurred. Please try again.');
     }
   };
 
@@ -34,6 +46,7 @@ export default function SignInScreen({ navigation }) {
         onChangeText={setPassword}
         secureTextEntry
       />
+      {signInError ? <Text style={styles.errorText}>{signInError}</Text> : null}
       <Button title="Sign In" onPress={handleSignIn} />
     </View>
   );
@@ -52,5 +65,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 5,
+  },
+  errorText: {
+    color: 'red',
+    marginTop: 5,
   },
 });
