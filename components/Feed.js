@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Image, SafeAreaView } from 'react-native';
 import Post from './Post';
 import { supabase } from '../SupaBase/supabaseClient';
 import { FlatList } from 'react-native-gesture-handler';
@@ -61,31 +61,55 @@ export default function Feed() {
 
   if (loading) {
     return (
-      <View style={styles.container}>
-        <Text>Loading...</Text>
-      </View>
+      <SafeAreaView style={styles.safeArea}>
+        <View style={styles.container}>
+          <Text>Loading...</Text>
+        </View>
+      </SafeAreaView>
     );
   }
 
   return (
-    <FlatList
-      contentContainerStyle={styles.container}
-      data={posts}
-      keyExtractor={(item) => item.id.toString()}
-      renderItem={({ item }) => (
-        <Post username={item.username} content={item.content} 
-        createdAt={item.created_at} 
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.container}>
+        <Image
+          source={require('../assets/TopPNG.png')}
+          style={styles.topImage}
         />
-      )}
-    />
+        <FlatList
+          contentContainerStyle={styles.listContainer}
+          data={posts}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <Post
+              username={item.username}
+              content={item.content}
+              createdAt={item.created_at}
+            />
+          )}
+        />
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+  },
   container: {
-    flexGrow: 1,
-    justifyContent: 'center',
+    flex: 1,
     alignItems: 'center',
+    justifyContent: 'flex-start',
     padding: 10,
+  },
+  topImage: {
+    width: 200,
+    height: 85,
+    marginBottom: 20,
+  },
+  listContainer: {
+    flexGrow: 1,
+    alignItems: 'center',
   },
 });

@@ -55,7 +55,7 @@ export default function SignInScreen({ navigation }) {
             source={require('../assets/TopPNG.png')}
             style={styles.topImage}
           />
-          <Text style={styles.title}>Sign In</Text>
+          <Text style={styles.title}>Sign in to Vailix</Text>
           <TextInput
             style={styles.input}
             placeholder="Email"

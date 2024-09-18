@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Alert } from 'react-native';
+import { Alert, View, Image, StyleSheet, SafeAreaView, Text, TextInput, Button } from 'react-native';
 import { supabase } from '../SupaBase/supabaseClient';
-import UserForm from '../components/userForm';
 import Loading from '../components/Loading';
 
 export default function MeScreen() {
@@ -56,12 +55,81 @@ export default function MeScreen() {
   }
 
   return (
-    <UserForm
-      username={username}
-      setUsername={setUsername}
-      email={email}
-      setEmail={setEmail}
-      handleUpdate={handleUpdate}
-    />
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.container}>
+        <Image
+          source={require('../assets/TopPNG.png')}
+          style={styles.topImage}
+        />
+        <Text style={styles.header}>User Profile</Text>
+        <View style={styles.form}>
+          <Text style={styles.label}>Username:</Text>
+          <TextInput
+            style={styles.input}
+            value={username}
+            onChangeText={setUsername}
+          />
+          <Text style={styles.label}>Email:</Text>
+          <TextInput
+            style={styles.input}
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+          />
+          <Button title="Update" onPress={handleUpdate} />
+        </View>
+      </View>
+    </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#f0f0f0', // Light grey background
+  },
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    backgroundColor: '#ffffff', // White background for the main container
+    borderWidth: 1,
+    borderColor: '#000000', // Black border
+    borderRadius: 5,
+    boxShadow: '0px 0px 10px #888888', // Simple shadow effect
+  },
+  topImage: {
+    width: 200,
+    height: 85,
+    marginBottom: 20,
+  },
+  header: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    color: '#0000ff', // Blue text color
+    fontFamily: 'Arial', // Basic font
+  },
+  form: {
+    width: '100%',
+    alignItems: 'flex-start',
+  },
+  label: {
+    fontSize: 16,
+    marginBottom: 5,
+    color: '#000000', // Black text color
+    fontFamily: 'Arial', // Basic font
+  },
+  input: {
+    width: '100%',
+    padding: 10,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: '#000000', // Black border
+    borderRadius: 5,
+    backgroundColor: '#ffffff', // White background
+    fontFamily: 'Arial', // Basic font
+  },
+});

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, Alert, Keyboard, TouchableWithoutFeedback, Image, SafeAreaView } from 'react-native';
 import { supabase } from '../SupaBase/supabaseClient';
 
 export default function PostScreen({ navigation }) {
@@ -40,31 +40,45 @@ export default function PostScreen({ navigation }) {
   };
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View style={styles.container}>
-        <Text>Create a Post</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="What's on your mind?"
-          value={content}
-          onChangeText={setContent}
-          maxLength={150}
-          multiline
-        />
-        <Text style={styles.charCounter}>{content.length}/150</Text>
-        {postError ? <Text style={styles.errorText}>{postError}</Text> : null}
-        <Button title="Post" onPress={handlePost} />
-      </View>
-    </TouchableWithoutFeedback>
+    <SafeAreaView style={styles.safeArea}>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={styles.container}>
+          <Image
+            source={require('../assets/TopPNG.png')}
+            style={styles.topImage}
+          />
+          <Text>Create a Post</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="What's on your mind?"
+            value={content}
+            onChangeText={setContent}
+            maxLength={150}
+            multiline
+          />
+          <Text style={styles.charCounter}>{content.length}/150</Text>
+          {postError ? <Text style={styles.errorText}>{postError}</Text> : null}
+          <Button title="Post" onPress={handlePost} />
+        </View>
+      </TouchableWithoutFeedback>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+  },
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     padding: 20,
+  },
+  topImage: {
+    width: 200,
+    height: 85,
+    marginBottom: 20,
   },
   input: {
     width: '100%',
