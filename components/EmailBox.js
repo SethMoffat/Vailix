@@ -30,16 +30,20 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'column',
     alignItems: 'center',
-    borderWidth: 2, // Thick border
-    borderColor: '#ccc',
-    borderRadius: 10, // Rounded edges
-    padding: 10,
+    borderWidth: 1, // Simple border
+    borderColor: '#000', // Black border
+    borderRadius: 0, // No rounded edges
+    padding: 5, // Basic padding
     marginVertical: 10,
     width: '80%', // Set the same width as PasswordBox
+    backgroundColor: '#fff', // White background
   },
   input: {
     width: '100%',
-    padding: 10,
+    padding: 5, // Basic padding
+    borderWidth: 1, // Simple border
+    borderColor: '#000', // Black border
+    backgroundColor: '#fff', // White background
   },
   errorText: {
     color: 'red',

@@ -34,19 +34,23 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderWidth: 2, // Thick border
-    borderColor: '#ccc',
-    borderRadius: 10, // Rounded edges
-    padding: 10,
+    borderWidth: 1, // Simple border
+    borderColor: '#000', // Black border
+    borderRadius: 0, // No rounded edges
+    padding: 5, // Basic padding
     marginVertical: 10,
     width: '80%', // Set the same width as EmailBox
+    backgroundColor: '#fff', // White background
   },
   input: {
     flex: 1,
-    padding: 10,
+    padding: 5, // Basic padding
+    borderWidth: 1, // Simple border
+    borderColor: '#000', // Black border
+    backgroundColor: '#fff', // White background
   },
   icon: {
-    padding: 10,
+    padding: 5, // Basic padding
   },
   errorText: {
     color: 'red',

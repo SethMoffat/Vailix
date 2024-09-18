@@ -3,6 +3,7 @@ import { View, Text, Button, StyleSheet, TouchableWithoutFeedback, Keyboard } fr
 import { supabase } from '../SupaBase/supabaseClient'; // Correct the import path
 import PasswordBox from '../components/PasswordBox'; // Import PasswordBox component
 import EmailBox from '../components/EmailBox'; // Import EmailBox component
+import BottomButtons from '../components/BottomButtons'; // Import BottomButtons component
 
 export default function SignUpScreen({ navigation }) {
   const [email, setEmail] = useState('');
@@ -66,19 +67,22 @@ export default function SignUpScreen({ navigation }) {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
-        <Text>Sign Up</Text>
-        <EmailBox
-          value={email}
-          onChangeText={setEmail}
-          error={emailError}
-        />
-        <PasswordBox
-          value={password}
-          onChangeText={setPassword}
-          error={passwordError}
-        />
-        {signUpError ? <Text style={styles.errorText}>{signUpError}</Text> : null}
-        <Button title="Sign Up" onPress={handleSignUp} />
+        <View style={styles.content}>
+          <Text>Sign Up</Text>
+          <EmailBox
+            value={email}
+            onChangeText={setEmail}
+            error={emailError}
+          />
+          <PasswordBox
+            value={password}
+            onChangeText={setPassword}
+            error={passwordError}
+          />
+          {signUpError ? <Text style={styles.errorText}>{signUpError}</Text> : null}
+          <Button title="Sign Up" onPress={handleSignUp} />
+        </View>
+        <BottomButtons />
       </View>
     </TouchableWithoutFeedback>
   );
@@ -87,8 +91,15 @@ export default function SignUpScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: 'space-between',
     alignItems: 'center',
+    paddingVertical: 20,
+  },
+  content: {
+    flex: 1,
     justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
   },
   input: {
     width: '80%',

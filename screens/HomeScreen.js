@@ -19,7 +19,7 @@ export default function HomeScreen({ navigation }) {
         style={styles.button}
       />
       <CustomButton
-        title="Sign In"
+        title="Sign in to Vailix"
         onPress={() => navigation.navigate('SignIn')}
         style={styles.button}
       />

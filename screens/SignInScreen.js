@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { SafeAreaView, View, Text, TextInput, StyleSheet, Image } from 'react-native';
+import { SafeAreaView, View, Text, TextInput, StyleSheet, Image, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { supabase } from '../SupaBase/supabaseClient';
 import SignInButton from '../components/SignInButton'; // Adjust the path as necessary
+import OldSignup from '../components/OldSignUp';
+import BottomButtons from '../components/BottomButtons';
 
 export default function SignInScreen({ navigation }) {
   const [email, setEmail] = useState('');
@@ -41,31 +43,40 @@ export default function SignInScreen({ navigation }) {
     }
   };
 
+  const handleSignupPress = () => {
+    navigation.navigate('SignUp'); // Adjust the navigation target as necessary
+  };
+
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <View style={styles.container}>
-        <Image
-          source={require('../assets/TopPNG.png')}
-          style={styles.topImage}
-        />
-        <Text>Sign In</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Email"
-          value={email}
-          onChangeText={setEmail}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Password"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-        />
-        {signInError ? <Text style={styles.errorText}>{signInError}</Text> : null}
-        <SignInButton title="Sign In" onPress={handleSignIn} />
-      </View>
-    </SafeAreaView>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <SafeAreaView style={styles.safeArea}>
+        <View style={styles.container}>
+          <Image
+            source={require('../assets/TopPNG.png')}
+            style={styles.topImage}
+          />
+          <Text style={styles.title}>Sign In</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Email"
+            value={email}
+            onChangeText={setEmail}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Password"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+          />
+          {signInError ? <Text style={styles.errorText}>{signInError}</Text> : null}
+          <SignInButton title="Sign In" onPress={handleSignIn} />
+          <OldSignup onPress={handleSignupPress} />
+        </View>
+        <BottomButtons />
+
+      </SafeAreaView>
+    </TouchableWithoutFeedback>
   );
 }
 
@@ -77,6 +88,8 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    paddingHorizontal: 20, // Added padding to ensure proper spacing
+    paddingVertical: 225, // Added vertical padding to ensure proper spacing
   },
   topImage: {
     position: 'absolute',
@@ -85,8 +98,13 @@ const styles = StyleSheet.create({
     width: 200, // Adjusted width
     height: 85, // Adjusted height
   },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+  },
   input: {
-    width: '80%',
+    width: '100%',
     padding: 10,
     marginVertical: 10,
     borderWidth: 1,
