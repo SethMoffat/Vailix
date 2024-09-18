@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { Alert, View, Image, StyleSheet, SafeAreaView, Text, TextInput, Button } from 'react-native';
+import { Alert, View, StyleSheet, SafeAreaView, Text, TextInput, TouchableOpacity } from 'react-native';
 import { supabase } from '../SupaBase/supabaseClient';
 import Loading from '../components/Loading';
+import BioBox from '../components/BioBox'; // Import BioBox
+import Icon from 'react-native-vector-icons/FontAwesome'; // Import FontAwesome icons
+import DeleteAccountButton from '../components/DeleteAccountButton'; // Import DeleteAccountButton
 
 export default function MeScreen() {
   const [user, setUser] = useState(null);
-  const [username, setUsername] = useState('');
+  const [handle, setHandle] = useState('');
   const [email, setEmail] = useState('');
+  const [bio, setBio] = useState(''); // Add state for bio
+  const [profilePicture, setProfilePicture] = useState(''); // Add state for profile picture
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -15,8 +20,10 @@ export default function MeScreen() {
         console.error('Error fetching user:', error);
       } else {
         setUser(user);
-        setUsername(user.user_metadata.username || '');
+        setHandle(user.user_metadata.handle || '');
         setEmail(user.email || '');
+        setBio(user.user_metadata.bio || ''); // Fetch bio if available
+        setProfilePicture(user.user_metadata.profile_picture || ''); // Fetch profile picture if available
       }
     };
 
@@ -26,27 +33,47 @@ export default function MeScreen() {
   const handleUpdate = async () => {
     const updates = {
       email,
-      data: { username },
+      data: { handle, bio, profile_picture: profilePicture }, // Include handle, bio, and profile picture in updates
     };
 
     // Update user metadata
-    const { error } = await supabase.auth.updateUser(updates);
+    const { error: authError } = await supabase.auth.updateUser(updates);
 
-    if (error) {
-      Alert.alert('Error updating user:', error.message);
+    if (authError) {
+      Alert.alert('Error updating user:', authError.message);
+      console.error('Auth update error:', authError);
       return; // Exit if there's an error
     }
 
-    // Update the username in the auth.users table
-    const { error: updateError } = await supabase
-      .from('auth.users') // Reference the correct schema
-      .update({ username })
+    // Update the handle, bio, and profile picture in the users table
+    const { data, error: updateError } = await supabase
+      .from('users') // Ensure the correct table name
+      .update({ handle, bio, profile_picture: profilePicture })
       .eq('id', user.id);
 
     if (updateError) {
-      Alert.alert('Error updating username in users table:', updateError.message);
+      Alert.alert('Error updating user in users table:', updateError.message);
+      console.error('Table update error:', updateError);
     } else {
       Alert.alert('User updated successfully!');
+      console.log('Update response:', data);
+    }
+  };
+
+  const handleHandleChange = (text) => {
+    console.log('Handle before set:', text);
+    setHandle(text);
+    console.log('Handle after set:', handle);
+  };
+
+  const handleDeleteAccount = async () => {
+    const { error } = await supabase.auth.api.deleteUser(user.id);
+    if (error) {
+      Alert.alert('Error deleting account:', error.message);
+      console.error('Delete account error:', error);
+    } else {
+      Alert.alert('Account deleted successfully!');
+      console.log('Account deleted');
     }
   };
 
@@ -57,26 +84,32 @@ export default function MeScreen() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
-        <Image
-          source={require('../assets/TopPNG.png')}
-          style={styles.topImage}
+        <Icon
+          name="user-circle"
+          size={100}
+          color="#000000" // Black color for the icon
+          style={styles.profileIcon}
         />
         <Text style={styles.header}>User Profile</Text>
         <View style={styles.form}>
-          <Text style={styles.label}>Username:</Text>
+          <Text style={styles.label}>Handle</Text>
           <TextInput
             style={styles.input}
-            value={username}
-            onChangeText={setUsername}
+            value={handle}
+            onChangeText={handleHandleChange}
           />
-          <Text style={styles.label}>Email:</Text>
+          <Text style={styles.label}>Email</Text>
           <TextInput
             style={styles.input}
             value={email}
-            onChangeText={setEmail}
+            editable={false} // Make email unchangeable
             keyboardType="email-address"
           />
-          <Button title="Update" onPress={handleUpdate} />
+          <BioBox bio={bio} setBio={setBio} />
+          <TouchableOpacity style={styles.button} onPress={handleUpdate}>
+            <Text style={styles.buttonText}>Update</Text>
+          </TouchableOpacity>
+          <DeleteAccountButton onDelete={handleDeleteAccount} />
         </View>
       </View>
     </SafeAreaView>
@@ -100,9 +133,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     boxShadow: '0px 0px 10px #888888', // Simple shadow effect
   },
-  topImage: {
-    width: 200,
-    height: 85,
+  profileIcon: {
     marginBottom: 20,
   },
   header: {
@@ -131,5 +162,19 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     backgroundColor: '#ffffff', // White background
     fontFamily: 'Arial', // Basic font
+  },
+  button: {
+    backgroundColor: '#e0e0e0', // Light grey background
+    borderWidth: 1,
+    borderColor: '#000000', // Black border
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#000000', // Black text color
+    fontFamily: 'Arial', // Basic font
+    fontSize: 16,
   },
 });

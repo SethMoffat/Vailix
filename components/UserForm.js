@@ -1,21 +1,31 @@
 import React from 'react';
 import { View, Text, TextInput, Button, StyleSheet, TouchableWithoutFeedback, Keyboard } from 'react-native';
 
-export default function UserForm({ username, setUsername, email, setEmail, handleUpdate }) {
+export default function UserForm({ handle, setHandle, email, setEmail, handleUpdate }) {
+  const handleHandleChange = (text) => {
+    // Ensure the handle starts with '@'
+    if (!text.startsWith('@')) {
+      text = '@' + text;
+    }
+    setHandle(text);
+  };
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
-        <Text style={styles.label}>Username</Text>
+        <Text style={styles.label}>Handle</Text>
         <TextInput
           style={styles.input}
-          value={username}
-          onChangeText={setUsername}
+          value={handle}
+          onChangeText={handleHandleChange}
         />
         <Text style={styles.label}>Email</Text>
         <TextInput
           style={styles.input}
           value={email}
           onChangeText={setEmail}
+          editable={false} // Make email unchangeable
+          keyboardType="email-address"
         />
         <Button title="Update" onPress={handleUpdate} />
       </View>
